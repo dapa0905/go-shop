@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"go-shop/config"
 	"go-shop/models"
 
@@ -26,4 +27,20 @@ func RegisterUser(email, password, name string) (*models.User, error) {
 	}
 
 	return user, nil
+}
+
+func LoginUser(email, password string) (*models.User, error) {
+
+	var user models.User
+
+	if err := config.DB.Where("email =?", email).First(&user).Error; err != nil {
+		return nil, errors.New("not find User")
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return nil, errors.New("wrong Password")
+	}
+
+	return &user, nil
+
 }
