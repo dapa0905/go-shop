@@ -34,7 +34,7 @@ func ConnectDB() {
 		log.Fatal("DB 연결 실패:", err)
 	}
 
-	err = database.AutoMigrate(&models.User{})
+	err = database.AutoMigrate(&models.User{}, &models.Product{})
 	if err != nil {
 		log.Fatal("AutoMigrate 실패:", err)
 	}

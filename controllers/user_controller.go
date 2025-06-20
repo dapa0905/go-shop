@@ -59,3 +59,16 @@ func LoginUser(c *gin.Context) {
 		"token": token,
 	})
 }
+
+func GetMe(c *gin.Context) {
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "No authentication information"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Hello!",
+		"user_id": userID,
+	})
+}
