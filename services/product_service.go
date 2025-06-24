@@ -68,3 +68,24 @@ func UpdateProduct(id uint, dto dtos.UpdateProductRequest) (*models.Product, err
 	return &product, nil
 
 }
+
+func DeleteProduct(id uint) error {
+	var product models.Product
+
+	if err := config.DB.First(&product, id).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return fmt.Errorf("can't find the product")
+		}
+		return err
+	}
+
+	result := config.DB.Delete(&product)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("delete failed: no rows affected")
+	}
+
+	return nil
+}

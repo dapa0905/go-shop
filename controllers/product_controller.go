@@ -103,3 +103,18 @@ func UpdateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 
 }
+
+func DeleteProduct(c *gin.Context) {
+	idParam := c.Param("id")
+	idUnit, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	err = services.DeleteProduct(uint(idUnit))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Product deleted successfully"})
+}

@@ -61,7 +61,7 @@ func LoginUser(c *gin.Context) {
 }
 
 func GetMe(c *gin.Context) {
-	userID, exists := c.Get("user_id")
+	userRaw, exists := c.Get("user")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "No authentication information"})
 		return
@@ -69,6 +69,6 @@ func GetMe(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Hello!",
-		"user_id": userID,
+		"user":    userRaw,
 	})
 }

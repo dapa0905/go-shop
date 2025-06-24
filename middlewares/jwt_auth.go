@@ -6,6 +6,9 @@ import (
 	"os"
 	"strings"
 
+	"go-shop/config"
+	"go-shop/models"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -41,8 +44,13 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user_id", uint(userID))
-
+		var user models.User
+		if err := config.DB.First(&user, userID).Error; err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "User information not found"})
+			return
+		}
+		log.Println("user :", user)
+		c.Set("user", user)
 		c.Next()
 
 	}
