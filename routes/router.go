@@ -19,6 +19,8 @@ func SetupRouter() *gin.Engine {
 	auth.Use(middlewares.JWTAuthMiddleware())
 	{
 		auth.GET("/me", controllers.GetMe)
+		auth.GET("/cart", controllers.GetCartByUserID)
+		auth.POST("/cart", controllers.AddToCart)
 
 	}
 
