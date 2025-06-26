@@ -21,3 +21,12 @@ type AddToCartRequest struct {
 type AddToCartResponse struct {
 	Message string `json:"message"`
 }
+
+type UpdateToCartRequest struct {
+	ProductID uint `json:"product_id" binding:"required"`
+	Quantity  uint `json:"quantity" binding:"required"`
+}
+
+type UpdateToCartResponse struct {
+	Message string `json:"message"`
+}

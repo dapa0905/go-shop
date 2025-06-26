@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"go-shop/config"
 	"go-shop/dtos"
 	"go-shop/models"
@@ -62,4 +63,36 @@ func AddToCart(userID uint, req dtos.AddToCartRequest) error {
 		cartItem.Quantity += req.Quantity
 		return tx.Save(&cartItem).Error
 	})
+}
+
+func UpdateCartItem(userID uint, req dtos.UpdateToCartRequest) error {
+	return config.DB.Transaction(func(tx *gorm.DB) error {
+		var cart models.Cart
+		if err := tx.Where("user_id = ?", userID).First(&cart).Error; err != nil {
+			return err
+		}
+
+		var item models.CartItem
+		if err := tx.Where("cart_id = ? AND product_id = ?", cart.ID, req.ProductID).First(&item).Error; err != nil {
+			return fmt.Errorf("item not found")
+		}
+
+		if req.Quantity == 0 {
+			return tx.Delete(&item).Error
+		}
+
+		item.Quantity = req.Quantity
+		return tx.Save(&item).Error
+	})
+}
+
+func DeleteCartItem(userID uint, productID uint) error {
+	return config.DB.Transaction(func(tx *gorm.DB) error {
+		var cart models.Cart
+		if err := tx.Where("user_id : ?", userID).First(&cart).Error; err != nil {
+			return err
+		}
+		return tx.Where("cart_id : ? AND product_id : ?", cart.ID, productID).Delete(&models.CartItem{}).Error
+	})
+
 }

@@ -21,6 +21,7 @@ func SetupRouter() *gin.Engine {
 		auth.GET("/me", controllers.GetMe)
 		auth.GET("/cart", controllers.GetCartByUserID)
 		auth.POST("/cart", controllers.AddToCart)
+		auth.PUT("/cart", controllers.UpdateCartItem)
 
 	}
 
