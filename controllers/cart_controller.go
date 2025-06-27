@@ -68,7 +68,7 @@ func UpdateCartItem(c *gin.Context) {
 }
 
 func DeleteCartItem(c *gin.Context) {
-	idParam := c.Param("id")
+	idParam := c.Param("product_id")
 	productID, err := strconv.ParseUint(idParam, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
@@ -87,5 +87,24 @@ func DeleteCartItem(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Faild to delete shopping cart"})
 		return
 	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Cart item deleted."})
+
+}
+
+func ClearCartItem(c *gin.Context) {
+	uid, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	userID := uid.(uint)
+	err := services.ClearCartItem(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Faild to delete shpping cart"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Cart item clear."})
 
 }

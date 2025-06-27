@@ -22,6 +22,8 @@ func SetupRouter() *gin.Engine {
 		auth.GET("/cart", controllers.GetCartByUserID)
 		auth.POST("/cart", controllers.AddToCart)
 		auth.PUT("/cart", controllers.UpdateCartItem)
+		auth.DELETE("/cart/:product_id", controllers.DeleteCartItem)
+		auth.DELETE("/cart", controllers.ClearCartItem)
 
 	}
 

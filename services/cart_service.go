@@ -23,7 +23,7 @@ func GetCartByUserID(userID uint) ([]dtos.CartItemResponse, error) {
 		return nil, err
 	}
 
-	var dtoItems []dtos.CartItemResponse
+	var dtoItems []dtos.CartItemResponse = []dtos.CartItemResponse{}
 	for _, item := range cart.CartItems {
 		dtoItems = append(dtoItems, dtos.CartItemResponse{
 			ItemID:      item.ID,
@@ -89,10 +89,19 @@ func UpdateCartItem(userID uint, req dtos.UpdateToCartRequest) error {
 func DeleteCartItem(userID uint, productID uint) error {
 	return config.DB.Transaction(func(tx *gorm.DB) error {
 		var cart models.Cart
-		if err := tx.Where("user_id : ?", userID).First(&cart).Error; err != nil {
+		if err := tx.Where("user_id = ?", userID).First(&cart).Error; err != nil {
 			return err
 		}
-		return tx.Where("cart_id : ? AND product_id : ?", cart.ID, productID).Delete(&models.CartItem{}).Error
+		return tx.Where("cart_id = ? AND product_id = ?", cart.ID, productID).Delete(&models.CartItem{}).Error
 	})
+}
 
+func ClearCartItem(userID uint) error {
+	return config.DB.Transaction(func(tx *gorm.DB) error {
+		var cart models.Cart
+		if err := tx.Where("user_id = ?", userID).First(&cart).Error; err != nil {
+			return err
+		}
+		return tx.Where("cart_id = ?", cart.ID).Delete(&models.CartItem{}).Error
+	})
 }

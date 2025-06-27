@@ -17,7 +17,6 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		authHeader := c.GetHeader("Authorization")
-		log.Println("Authorization header:", authHeader)
 		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing or type error"})
 			return
@@ -30,10 +29,7 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 
-		log.Println("JWT_SECRET (env):", os.Getenv("JWT_SECRET"))
-
 		if err != nil || !token.Valid {
-			log.Println("JWT Parse Error:", err)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			return
 		}
